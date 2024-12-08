@@ -27,8 +27,6 @@ let () =
         (Bool.to_int (check_dir g x y (-1, 1))) + (*SW*)
         (Bool.to_int (check_dir g x y (-1, -1)))  (*NW*) in
 
-    let cnt = count_cardinal grid 6 4 in
-    print_endline ("Cardinal count @ 6,4: " ^ string_of_int cnt);
     let cardinal_counts = List.fold_left (fun acc x -> acc + x) 0 (Util.grid_map (fun x y _ -> count_cardinal grid x y) grid) in
     print_endline ("Total cardinal counts: " ^ string_of_int cardinal_counts);
     let ordinal_counts = List.fold_left (fun acc x -> acc + x) 0 (Util.grid_map (fun x y _ -> count_ordinal grid x y) grid) in
