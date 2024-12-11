@@ -1,8 +1,7 @@
 open Common
 
 let () =
-    let file = open_in "./day1/input.txt" in
-    let lines = Util.get_lines file in
+    let lines = Util.get_lines "./day1/input.txt" in
     let parse_line line =
         Scanf.sscanf line "%d %d" (fun l r -> (l, r)) in
     let pairs = List.map parse_line lines in

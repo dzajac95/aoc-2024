@@ -16,8 +16,7 @@ let rec check_report_filt report idx =
         check_report_filt report (idx+1)
 
 let () =
-    let file = open_in "./day2/input.txt" in
-    let lines = Util.get_lines file in
+    let lines = Util.get_lines "./day2/input.txt" in
     let parse_line line =
         List.map (fun s -> int_of_string s) (String.split_on_char ' ' line) in
     let reports = List.map parse_line lines in

@@ -1,4 +1,5 @@
-let get_lines ic =
+let get_lines filepath =
+    let ic = open_in filepath in
     let rec loop acc =
         try
             let line = input_line ic in
@@ -9,8 +10,7 @@ let get_lines ic =
     loop []
 
 let read_entire_file filepath =
-    let file = open_in filepath in
-    List.fold_left (fun acc s -> acc ^ s) "" (get_lines file)
+    List.fold_left (fun acc s -> acc ^ s) "" (get_lines filepath)
 
 type grid = {
     data : string;
@@ -28,7 +28,7 @@ let grid_at g x y =
     String.sub g.data (grid_idx g x y) 1
 
 let get_grid filepath =
-    let lines = get_lines (open_in filepath) in
+    let lines = get_lines filepath in
     let width = String.length (List.hd lines) in
     let height = List.length lines in
     if not (List.for_all (fun s -> (String.length s) == width) lines) then
