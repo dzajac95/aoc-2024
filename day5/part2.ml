@@ -34,6 +34,11 @@ let () =
             |> List.fold_left (fun acc f -> (fun x -> acc x || f x)) (fun _ -> false) in
     let ruledata = combine_same raw_rules  in
     let rules = List.map (fun (x,rule) -> x,proc_rule rule) ruledata in
+    let get_rule x =
+        if List.mem_assoc x rules then
+            List.assoc x rules
+        else
+            (fun _ -> false) in
     print_endline "Parsed rules:";
     List.iter (fun (x,v) -> print_string ((string_of_int x) ^ ": "); Util.print_list string_of_int v) ruledata;
     let parse_updates ls =
@@ -41,23 +46,21 @@ let () =
             List.map int_of_string Str.(split (regexp ",") line) in
         List.map parse ls in
     let updates = parse_updates rem in
-    (* List.iter print_list string_of_int updates; *)
+
     let check_update update = 
         let rec loop rem =
             match rem with
             | [] -> true
             | _::[] -> true
             | x::xs ->
-                    if List.mem_assoc x rules then
-                        let found = List.map (List.assoc x rules) xs
-                                    |> List.fold_left ( || ) false in
-                        if found then
-                            false
-                        else
-                            loop xs
-                    else loop xs in
-
+                    let bad = List.map (get_rule x) xs
+                                |> List.fold_left ( || ) false in
+                    if bad then
+                        false
+                    else
+                        loop xs in
         loop (List.rev update) in
+
     let bad = List.filter (Fun.negate check_update) updates in
     let _print_intlist = Util.print_list string_of_int in
     let fix_bad update =
@@ -66,11 +69,8 @@ let () =
             | [] -> []
             | [x] -> [x]
             | x::xs ->
-                    if List.mem_assoc x rules then
-                        match List.partition (List.assoc x rules) xs with
-                        | (l1, l2) -> (loop l1) @ (x :: (loop l2))
-                    else
-                        x :: loop xs in
+                    match List.partition (get_rule x) xs with
+                    | (l1, l2) -> (loop l1) @ (x :: (loop l2)) in
         List.rev (loop (List.rev update)) in
     print_endline "Input unordered lists:";
     List.iter (fun u -> Util.print_list string_of_int u) bad;
