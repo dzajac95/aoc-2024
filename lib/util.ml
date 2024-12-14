@@ -34,6 +34,9 @@ let grid_idx g x y =
     else
         x + y*g.width
 
+let grid_coord g idx =
+    idx / g.width, idx mod g.height
+
 let grid_at g x y =
     String.sub g.data (grid_idx g x y) 1
 
