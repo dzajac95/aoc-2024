@@ -12,6 +12,16 @@ let get_lines filepath =
 let read_entire_file filepath =
     List.fold_left (fun acc s -> acc ^ s) "" (get_lines filepath)
 
+let print_list conv l =
+    let rec loop xs =
+        match xs with
+        | [] -> ()
+        | [x] -> print_string (conv x)
+        | x::rest -> print_string (conv x ^ ", "); loop rest in
+    print_string "[";
+    loop l;
+    print_endline "]"
+
 type grid = {
     data : string;
     width : int;

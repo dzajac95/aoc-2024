@@ -5,15 +5,11 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github dzajac95/aoc2024))
 
-(authors "Author Name <author@example.com>")
-
-(maintainers "Maintainer Name <maintainer@example.com>")
+(authors "Dominik Zajac <dzajac95@gmail.com>")
 
 (license LICENSE)
-
-(documentation https://url/to/documentation)
 
 (package
  (name aoc2024)

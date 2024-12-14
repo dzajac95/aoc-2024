@@ -1,3 +1,3 @@
 (executables
- (names part1 part2)
+ (names part1)
  (libraries common str))

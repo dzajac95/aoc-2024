@@ -29,27 +29,36 @@ let () =
                     loop rest ((parse l)::acc) in
         loop ls [] in
     let raw_rules, rem = parse_rules lines in
-    let rules = combine_same raw_rules in
-    List.iter (fun (x, l) -> print_string (string_of_int x ^ ": "); List.iter (fun x -> print_string (string_of_int x ^ " ")) l; print_newline ()) rules;
+    let proc_rule rule = 
+            List.map (fun y -> (fun x -> x == y)) rule
+            |> List.fold_left (fun acc f -> (fun x -> acc x || f x)) (fun _ -> false) in
+    let ruledata = combine_same raw_rules  in
+    let rules = List.map (fun (x,rule) -> x,proc_rule rule) ruledata in
+    print_endline "Parsed rules:";
+    List.iter (fun (x,v) -> print_string ((string_of_int x) ^ ": "); Util.print_list string_of_int v) ruledata;
     let parse_updates ls =
         let parse line =
-            List.map int_of_string (Str.split (Str.regexp ",") line) in
+            List.map int_of_string Str.(split (regexp ",") line) in
         List.map parse ls in
     let updates = parse_updates rem in
-    let print_intlist l =
-        let rec loop xs =
-            match xs with
-            | [] -> ()
-            | [x] -> print_string (string_of_int x)
-            | x::rest -> print_string (string_of_int x ^ ", "); loop rest in
-        print_string "[";
-        loop l;
-        print_endline "]" in
-    let check_update rules update =
-        let rev_update = List.rev update in
-        let rec loop rules rev =
-            match rev with
-            | [] -> ()
-            | x::xs -> 
-    List.iter print_intlist updates
-        
+    (* List.iter print_list string_of_int updates; *)
+    let check_update update = 
+        let rec loop rem =
+            match rem with
+            | [] -> true
+            | _::[] -> true
+            | x::xs ->
+                    if List.mem_assoc x rules then
+                        let found = List.map (List.assoc x rules) xs
+                                    |> List.fold_left ( || ) false in
+                        if found then
+                            false
+                        else
+                            loop xs
+                    else loop xs in
+
+        loop (List.rev update) in
+    let res = List.filter check_update updates
+              |> List.map (fun l -> List.nth l ((List.length l) / 2))
+              |> List.fold_left ( + ) 0 in
+    print_endline ("Final result: " ^ string_of_int res)
