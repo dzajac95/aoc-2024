@@ -35,7 +35,7 @@ let grid_idx g x y =
         x + y*g.width
 
 let grid_coord g idx =
-    idx / g.width, idx mod g.height
+    (idx mod g.height, idx / g.width)
 
 let grid_at g x y =
     String.sub g.data (grid_idx g x y) 1
@@ -48,7 +48,7 @@ let get_grid filepath =
         raise (Failure "line widths do not all match")
     else
         {
-            data = List.fold_left (fun acc s -> acc ^ s) "" lines;
+            data = List.fold_left ( ^ ) "" lines;
             width = width;
             height = height;
         }
@@ -56,7 +56,7 @@ let get_grid filepath =
 let grid_print g =
     let rec print_rows r acc =
         if r < g.height then
-            print_rows (r+1) (acc ^ (String.sub g.data (grid_idx g r 0) g.width) ^ "\n")
+            print_rows (r+1) (acc ^ (String.sub g.data (grid_idx g 0 r) g.width) ^ "\n")
         else
             acc in
     print_endline (print_rows 0 "")
